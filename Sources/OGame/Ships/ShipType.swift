@@ -14,7 +14,7 @@ public enum ShipType: GameId, Identifiable, Equatable {
     case battlecruiser = 215
     case bomber = 211
     case destroyer = 213
-    case deathstar = 214
+    case deathStar = 214
     case reaper = 218
     case pathfinder = 219
     case smallCargo = 202
@@ -29,4 +29,3 @@ public enum ShipType: GameId, Identifiable, Equatable {
         rawValue
     }
 }
-
