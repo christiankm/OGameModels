@@ -26,6 +26,25 @@ final class ShipTypeTests: XCTestCase {
         XCTAssertEqual(ShipType.recycler.id, 209)
         XCTAssertEqual(ShipType.espionageProbe.id, 210)
         XCTAssertEqual(ShipType.solarSatellite.id, 212)
+        XCTAssertEqual(ShipType.tradeShip.id, 216)
         XCTAssertEqual(ShipType.crawler.id, 217)
+    }
+
+    func testAllCases() throws {
+        XCTAssertEqual(ShipType.allCases.count, 17)
+    }
+
+    func testShipMatchesType() throws {
+        for shipType in ShipType.allCases {
+            XCTAssertEqual(shipType.ship.id, shipType.id, "\(shipType)")
+        }
+    }
+
+    func testShipNames() throws {
+        XCTAssertEqual(ShipType.allCases.map(\.ship.name), [
+            "Light Fighter", "Heavy Fighter", "Cruiser", "Battleship", "Battlecruiser", "Bomber",
+            "Destroyer", "Deathstar", "Reaper", "Pathfinder", "Small Cargo", "Large Cargo",
+            "Colony Ship", "Recycler", "Espionage Probe", "Solar Satellite", "Crawler"
+        ])
     }
 }
