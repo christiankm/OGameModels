@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -20,7 +20,7 @@ final class ReaperTests: XCTestCase {
     }
 
     func testCost() throws {
-        XCTAssertEqual(sut.cost, Resources(metal: 85_000, crystal: 55_000, deuterium: 20_000))
+        XCTAssertEqual(sut.cost, Resources(metal: 85000, crystal: 55000, deuterium: 20000))
     }
 
     func testBaseStructuralIntegrity() throws {
@@ -39,14 +39,14 @@ final class ReaperTests: XCTestCase {
 
     func testDrives() throws {
         XCTAssertEqual(sut.drives, [
-            ShipDrive(drive: .hyperspace, baseSpeed: 7_000, fuelConsumption: 1_100, minimumLevel: 7)
+            ShipDrive(drive: .hyperspace, baseSpeed: 7000, fuelConsumption: 1100, minimumLevel: 7)
         ])
     }
 
     func testCombatValues() throws {
         XCTAssertEqual(sut.baseShieldPower, 700)
-        XCTAssertEqual(sut.baseWeaponPower, 2_800)
-        XCTAssertEqual(sut.baseCargoCapacity, 10_000)
+        XCTAssertEqual(sut.baseWeaponPower, 2800)
+        XCTAssertEqual(sut.baseCargoCapacity, 10000)
         XCTAssertTrue(sut.isCombatShip)
     }
 
@@ -63,12 +63,13 @@ final class ReaperTests: XCTestCase {
 
     func testRapidfireFrom() throws {
         XCTAssertEqual(sut.rapidfireFrom, [
-            ShipType.deathstar.id: 10
+            ShipType.deathstar.id: 10,
+            DefenseType.ionCannon.id: 2
         ])
     }
 
     func testSpeed() throws {
-        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7)), 21_700)
-        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7), characterClass: .general), 28_700)
+        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7)), 21700)
+        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7), characterClass: .general), 28700)
     }
 }

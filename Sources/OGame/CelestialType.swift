@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -37,7 +37,7 @@ extension CelestialType: Identifiable {
 
 // MARK: Nameable
 
-extension CelestialType {
+extension CelestialType: Nameable {
     public var name: String {
         switch self {
         case .planet:
