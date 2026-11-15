@@ -31,6 +31,7 @@ public enum RequirementType {
     // Buildings
     case deuteriumSynthesizer
     case shipyard
+    case researchLab
     case missileSilo
 
     // Research
