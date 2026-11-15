@@ -27,6 +27,10 @@ public protocol Unit: FixedPriceable {
 
 extension Unit {
 
+    public var points: Int {
+        cost.metal + cost.crystal + cost.deuterium
+    }
+
     public var baseStructuralIntegrity: Int {
         cost.metal + cost.crystal
     }
@@ -34,5 +38,30 @@ extension Unit {
     /// Strutural integrity of a unit.
     public func structuralIntegrity(armorTechnology: Level) -> Int {
         Int(Double(baseStructuralIntegrity) * (1 + Double(armorTechnology) * 0.1))
+    }
+}
+
+// MARK: Combat
+
+extension Unit {
+
+    /// The number of shots each ship and defence has against this unit, keyed by the attacker's ID.
+    public var rapidfireFrom: [GameId: Int] {
+        let attackers: [any Unit] = ShipType.allCases.map(\.ship) + DefenseType.allCases.map(\.defense)
+        return attackers.reduce(into: [:]) { rapidfireFrom, attacker in
+            if let shots = attacker.rapidfire[id] {
+                rapidfireFrom[attacker.id] = shots
+            }
+        }
+    }
+
+    /// Shield power after the shielding technology bonus of 10% per level.
+    public func shieldPower(shieldingTechnology: Level) -> Int {
+        baseShieldPower * (10 + shieldingTechnology) / 10
+    }
+
+    /// Weapon power after the weapons technology bonus of 10% per level.
+    public func weaponPower(weaponsTechnology: Level) -> Int {
+        baseWeaponPower * (10 + weaponsTechnology) / 10
     }
 }

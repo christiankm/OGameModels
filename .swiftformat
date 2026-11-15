@@ -72,9 +72,10 @@
 
 # Options
 --commas inline
+--decimalgrouping 3,4
 --extensionacl on-declarations
 --guardelse same-line
---header "\n OGame\n Copyright © {year} Christian Mitteldorf. All rights reserved.\n MIT license, see LICENSE file for details.\n"
+--header "\n OGame\n Copyright © {created.year} Christian Mitteldorf. All rights reserved.\n MIT license, see LICENSE file for details.\n"
 --ifdef no-indent
 --indent 4
 --lineaftermarks true
