@@ -15,37 +15,8 @@ public protocol Ship: Unit, Buildable, FixedPriceable, Identifiable, Hashable, C
     /// The drives the ship can fly with, starting with the one it's first built with. Empty for ships that can't fly.
     var drives: [ShipDrive] { get }
 
-    var baseShieldPower: Int { get }
-    var baseWeaponPower: Int { get }
     var baseCargoCapacity: Int { get }
     var isCombatShip: Bool { get }
-
-    /// The number of shots the ship gets against each unit, keyed by the unit's ID.
-    var rapidfire: [GameId: Int] { get }
-}
-
-// MARK: Combat
-
-extension Ship {
-
-    /// The number of shots each ship has against this ship, keyed by the attacking ship's ID.
-    public var rapidfireFrom: [GameId: Int] {
-        ShipType.allCases.reduce(into: [:]) { rapidfireFrom, shipType in
-            if let shots = shipType.ship.rapidfire[id] {
-                rapidfireFrom[shipType.id] = shots
-            }
-        }
-    }
-
-    /// Shield power after the shielding technology bonus of 10% per level.
-    public func shieldPower(shieldingTechnology: Level) -> Int {
-        baseShieldPower * (10 + shieldingTechnology) / 10
-    }
-
-    /// Weapon power after the weapons technology bonus of 10% per level.
-    public func weaponPower(weaponsTechnology: Level) -> Int {
-        baseWeaponPower * (10 + weaponsTechnology) / 10
-    }
 }
 
 // MARK: Flight
