@@ -49,9 +49,13 @@ public struct Coordinate {
     /// Initializes a coordinate with a string of one of these formats:
     /// (1, 33, 15), (3:373:2), [1,89,2], [1:79:9]
     public init?(string: String, type: CelestialType) {
-        // TODO: get coordinate from string, by replacing '(', ')', '[', ']', ' '.
-        // and then joining the string via either ',' or ':'
-        nil
+        let parts = string
+            .filter { !"()[] ".contains($0) }
+            .split(whereSeparator: { $0 == "," || $0 == ":" })
+        let numbers = parts.compactMap { Int($0) }
+        guard numbers.count == parts.count else { return nil }
+
+        self.init(array: numbers, type: type)
     }
 
     public init?(array: [Int], type: CelestialType) {

@@ -22,19 +22,20 @@ public protocol ScaledPriceable {
 extension ScaledPriceable {
 
     public func costToLevel(_ level: Level) -> Resources {
-        guard level > 1 else { return baseCost }
-
-        return Resources(
-            metal: baseCost.metal * costFactorToLevel(level),
-            crystal: baseCost.crystal * costFactorToLevel(level),
-            deuterium: baseCost.deuterium * costFactorToLevel(level),
-            energy: baseCost.energy * costFactorToLevel(level),
-            population: baseCost.population * costFactorToLevel(level),
-            food: baseCost.food * costFactorToLevel(level)
+        Resources(
+            metal: scaledCost(baseCost.metal, toLevel: level),
+            crystal: scaledCost(baseCost.crystal, toLevel: level),
+            deuterium: scaledCost(baseCost.deuterium, toLevel: level),
+            energy: scaledCost(baseCost.energy, toLevel: level),
+            population: scaledCost(baseCost.population, toLevel: level),
+            food: scaledCost(baseCost.food, toLevel: level)
         )
     }
 
-    private func costFactorToLevel(_ level: Level) -> Int {
-        Int(pow(costIncreaseFactor, Double(level - 1)))
+    /// Scales a base cost to the given level, rounded down.
+    internal func scaledCost(_ baseCost: Int, toLevel level: Level, factor: Double? = nil) -> Int {
+        guard level > 1 else { return baseCost }
+
+        return Int(Double(baseCost) * pow(factor ?? costIncreaseFactor, Double(level - 1)))
     }
 }

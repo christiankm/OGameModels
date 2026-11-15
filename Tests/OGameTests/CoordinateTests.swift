@@ -65,6 +65,19 @@ final class CoordinateTests: XCTestCase {
         XCTAssertNotEqual(moonCoordinate, debrisCoordinate)
     }
 
+    func testInitWithString() throws {
+        let formats = ["(1, 33, 15)", "(1:33:15)", "[1,33,15]", "[1:33:15]", "1:33:15"]
+        for format in formats {
+            XCTAssertEqual(Coordinate(string: format, type: .moon), Coordinate(galaxy: 1, system: 33, position: 15, type: .moon), format)
+        }
+    }
+
+    func testInitWithInvalidString() throws {
+        XCTAssertNil(Coordinate(string: "", type: .planet))
+        XCTAssertNil(Coordinate(string: "(1, 33)", type: .planet))
+        XCTAssertNil(Coordinate(string: "(1, a, 15)", type: .planet))
+    }
+
     func testDescription() throws {
         XCTAssertEqual(planetCoordinate.description, "[1:200:13]")
         XCTAssertEqual(moonCoordinate.description, "[4:200:13 Moon]")

@@ -5,7 +5,10 @@ import PackageDescription
 
 let package = Package(
     name: "OGame",
-    platforms: [.macOS(.v10_15)],
+    platforms: [
+        .iOS(.v11),
+        .macOS(.v10_15)
+    ],
     products: [
         .library(
             name: "OGame",

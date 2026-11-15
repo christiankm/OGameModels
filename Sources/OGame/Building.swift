@@ -8,6 +8,8 @@ import Foundation
 
 public protocol Building: Buildable, ScaledPriceable {
 
+    var id: GameId { get }
+
     /// The celestials the building can be built on.
     var celestialTypes: Set<CelestialType> { get }
 }
@@ -27,9 +29,9 @@ extension Building {
         let factories = 2_500 * Double(1 + roboticsFactory) * Double(universeSpeed) * pow(2, Double(naniteFactory))
         var seconds = Double(cost.metal + cost.crystal) / factories * 3_600
 
-//        if id != BuildingType.naniteFactory.id, level < 6 {
-//            seconds *= 2 / Double(8 - level)
-//        }
+        if id != BuildingType.naniteFactory.id, level < 6 {
+            seconds *= 2 / Double(8 - level)
+        }
 
         return max(1, seconds).rounded(.down)
     }

@@ -39,6 +39,13 @@ extension Unit {
     public func structuralIntegrity(armorTechnology: Level) -> Int {
         Int(Double(baseStructuralIntegrity) * (1 + Double(armorTechnology) * 0.1))
     }
+
+    /// The seconds it takes to build the given number of units, at least one second each.
+    public func constructionTime(count: Int, shipyard: Level, naniteFactory: Level, universeSpeed: Int) -> TimeInterval {
+        let factories = 2_500 * Double(1 + shipyard) * Double(universeSpeed) * pow(2, Double(naniteFactory))
+        let seconds = max(1, Double(baseStructuralIntegrity) / factories * 3_600).rounded(.down)
+        return seconds * Double(count)
+    }
 }
 
 // MARK: Combat

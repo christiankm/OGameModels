@@ -37,3 +37,11 @@ extension FlightSpeed: Identifiable {
         rawValue
     }
 }
+
+extension FlightSpeed: CustomStringConvertible {
+
+    /// The speed as a percentage, such as `50%`.
+    public var description: String {
+        "\(rawValue)%"
+    }
+}

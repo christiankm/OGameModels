@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -19,12 +19,6 @@ public enum Mission: Int {
     case missileAttack = 10
     case expedition = 15
     case trade = 16
-}
-
-extension Mission: Identifiable {
-    public var id: Identifier {
-        rawValue
-    }
 }
 
 extension Mission: CustomStringConvertible {

@@ -14,4 +14,9 @@ public struct Temperature {
         self.min = min
         self.max = max
     }
+
+    /// The mean of the minimum and maximum temperature, rounded down.
+    public var mean: Int {
+        (min + max) / 2
+    }
 }
