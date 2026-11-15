@@ -30,8 +30,11 @@ public enum RequirementType {
 
     // Buildings
     case deuteriumSynthesizer
+    case roboticsFactory
     case shipyard
     case researchLab
+    case naniteFactory
+    case lunarBase
     case missileSilo
 
     // Research
@@ -52,4 +55,12 @@ public enum RequirementType {
 
     // Lifeform Buildings
     case metropolis
+}
+
+extension Array where Element == Requirement {
+
+    /// Whether the given building and research levels meet every requirement.
+    public func areSatisfied(by levels: [RequirementType: Level]) -> Bool {
+        allSatisfy { levels[$0.requires, default: 0] >= $0.level }
+    }
 }

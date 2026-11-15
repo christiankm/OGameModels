@@ -8,4 +8,6 @@ import Foundation
 
 /// A game object that in some way can be obtained, built or upgraded. This covers buildings, research, ships, defences etc.
 public protocol Buildable: Identifiable, Nameable {
+
+    var requirements: [Requirement] { get }
 }

@@ -6,11 +6,18 @@
 
 import Foundation
 
-public struct MissileSilo: Building {
+public struct MissileSilo: Building, Demolishable {
+
     public let id = 44
     public let name = "Missile Silo"
     public let baseCost = Resources(metal: 20_000, crystal: 20_000, deuterium: 1_000)
     public let costIncreaseFactor = 2.0
+    public let requirements = [
+        Requirement(requires: .shipyard, level: 1)
+    ]
+    public var celestialTypes: Set<CelestialType> {
+        [.planet]
+    }
 
     public init() {}
 }

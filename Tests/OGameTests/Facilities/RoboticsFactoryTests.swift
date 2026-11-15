@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -25,5 +25,14 @@ final class RoboticsFactoryTests: XCTestCase {
 
     func testCostIncreaseFactor() throws {
         XCTAssertEqual(sut.costIncreaseFactor, 2.0)
+    }
+
+    func testRequirements() throws {
+        XCTAssertEqual(sut.requirements, [])
+    }
+
+    func testIsAvailableOnPlanetAndMoon() throws {
+        XCTAssertTrue(sut.isAvailable(on: .planet, levels: [:]))
+        XCTAssertTrue(sut.isAvailable(on: .moon, levels: [:]))
     }
 }

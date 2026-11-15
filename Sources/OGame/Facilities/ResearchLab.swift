@@ -6,11 +6,16 @@
 
 import Foundation
 
-public struct ResearchLab: Building {
+public struct ResearchLab: Building, Demolishable {
+
     public let id = 31
     public let name = "Research Lab"
     public let baseCost = Resources(metal: 200, crystal: 400, deuterium: 200)
     public let costIncreaseFactor = 2.0
+    public let requirements: [Requirement] = []
+    public var celestialTypes: Set<CelestialType> {
+        [.planet]
+    }
 
     public init() {}
 }

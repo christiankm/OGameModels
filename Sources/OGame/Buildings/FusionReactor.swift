@@ -1,30 +1,37 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
 import Foundation
 
-// func newFusionReactor() *fusionReactor {
-//    b := new(fusionReactor)
-//    b.Name = "fusion reactor"
-//    b.ID = FusionReactorID
-//    b.IncreaseFactor = 1.8
-//    b.BaseCost = Resources{Metal: 900, Crystal: 360, Deuterium: 180}
-//    b.Requirements = map[ID]int64{DeuteriumSynthesizerID: 5, EnergyTechnologyID: 3}
-//    return b
-// }
-//
-// // Production returns the energy production of the reactor
-// func (b *fusionReactor) Production(energyTechnology, lvl int64) int64 {
-//    pct := 1.0
-//    lvlf := float64(lvl)
-//    energyTechnologyf := float64(energyTechnology)
-//    return int64(math.Round(30 * lvlf * math.Pow(1.05+energyTechnologyf*0.01, lvlf) * pct))
-// }
-//
-// // GetFuelConsumption returns the deuterium consumed by the fusion reactor
-// func (b fusionReactor) GetFuelConsumption(universeSpeed int64, ratio float64, lvl int64) int64 {
-//    return int64(math.Abs(math.Floor(-10 * float64(universeSpeed) * float64(lvl) * math.Pow(1.1, float64(lvl)) * ratio)))
-// }
+public struct FusionReactor: Building, Demolishable {
+
+    public let id = 12
+    public let name = "Fusion Reactor"
+    public let baseCost = Resources(metal: 900, crystal: 360, deuterium: 180)
+    public let costIncreaseFactor = 1.8
+    public let requirements = [
+        Requirement(requires: .deuteriumSynthesizer, level: 5),
+        Requirement(requires: .energyTechnology, level: 3)
+    ]
+    public var celestialTypes: Set<CelestialType> {
+        [.planet]
+    }
+
+    public init() {}
+
+    /// The energy produced at the given level, with 1% more per level of energy technology.
+    public func production(level: Level, energyTechnology: Level) -> Int {
+        let efficiency = 1.05 + Double(energyTechnology) * 0.01
+        return Int((30 * Double(level) * pow(efficiency, Double(level))).rounded())
+    }
+
+    /// The deuterium the reactor burns per hour.
+    /// - Parameter productionRatio: The production setting for the reactor, from 0 to 1.
+    public func fuelConsumption(level: Level, universeSpeed: Int, productionRatio: Double = 1) -> Int {
+        let consumption = 10 * Double(universeSpeed) * Double(level) * pow(1.1, Double(level)) * productionRatio
+        return Int(consumption.rounded(.up))
+    }
+}

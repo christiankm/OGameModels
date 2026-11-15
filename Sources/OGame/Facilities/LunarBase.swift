@@ -7,10 +7,13 @@
 import Foundation
 
 public struct LunarBase: Building {
+
     public let id = 41
     public let name = "Lunar Base"
     public let baseCost = Resources(metal: 20_000, crystal: 40_000, deuterium: 20_000)
     public let costIncreaseFactor = 2.0
+    public let requirements: [Requirement] = []
+    public let celestialTypes: Set<CelestialType> = [.moon]
 
     public init() {}
 }

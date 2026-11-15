@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -25,5 +25,19 @@ final class LunarBaseTests: XCTestCase {
 
     func testCostIncreaseFactor() throws {
         XCTAssertEqual(sut.costIncreaseFactor, 2.0)
+    }
+
+    func testRequirements() throws {
+        XCTAssertEqual(sut.requirements, [])
+    }
+
+    func testIsAvailableOnlyOnMoon() throws {
+        XCTAssertFalse(sut.isAvailable(on: .planet, levels: [:]))
+        XCTAssertFalse(sut.isAvailable(on: .debrisField, levels: [:]))
+        XCTAssertTrue(sut.isAvailable(on: .moon, levels: [:]))
+    }
+
+    func testCannotBeDemolished() throws {
+        XCTAssertFalse((sut as Any) is any Demolishable)
     }
 }

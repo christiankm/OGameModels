@@ -6,11 +6,17 @@
 
 import Foundation
 
-public struct JumpGate: Building {
+public struct JumpGate: Building, Demolishable {
+
     public let id = 43
     public let name = "Jump Gate"
     public let baseCost = Resources(metal: 2_000_000, crystal: 4_000_000, deuterium: 2_000_000)
     public let costIncreaseFactor = 2.0
+    public let requirements = [
+        Requirement(requires: .lunarBase, level: 1),
+        Requirement(requires: .hyperspaceTechnology, level: 7)
+    ]
+    public let celestialTypes: Set<CelestialType> = [.moon]
 
     public init() {}
 }

@@ -1,6 +1,6 @@
 //
 //  OGame
-//  Copyright © 2022 Christian Mitteldorf. All rights reserved.
+//  Copyright © 2026 Christian Mitteldorf. All rights reserved.
 //  MIT license, see LICENSE file for details.
 //
 
@@ -25,5 +25,17 @@ final class JumpGateTests: XCTestCase {
 
     func testCostIncreaseFactor() throws {
         XCTAssertEqual(sut.costIncreaseFactor, 2.0)
+    }
+
+    func testRequirements() throws {
+        XCTAssertEqual(sut.requirements, [
+            Requirement(requires: .lunarBase, level: 1),
+            Requirement(requires: .hyperspaceTechnology, level: 7)
+        ])
+    }
+
+    func testIsAvailableOnlyOnMoon() throws {
+        XCTAssertTrue(sut.isAvailable(on: .moon, levels: [.lunarBase: 1, .hyperspaceTechnology: 7]))
+        XCTAssertFalse(sut.isAvailable(on: .planet, levels: [.lunarBase: 1, .hyperspaceTechnology: 7]))
     }
 }

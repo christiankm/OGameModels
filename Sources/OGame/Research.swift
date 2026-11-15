@@ -27,7 +27,7 @@ extension Research {
         celestialType.isPlanet
             && levels[.researchLab, default: 0] > 0
             && energy >= baseCost.energy
-            && requirements.allSatisfy { levels[$0.requires, default: 0] >= $0.level }
+            && requirements.areSatisfied(by: levels)
     }
 }
 
