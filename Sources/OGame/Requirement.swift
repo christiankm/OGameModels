@@ -22,7 +22,7 @@ public struct Requirement: Equatable {
 }
 
 /// A building, technology or other requirement that something else requires.
-public enum RequirementType {
+public enum RequirementType: Hashable {
     // Character Classes
     case generalClass
     case collectorClass
@@ -54,7 +54,7 @@ public enum RequirementType {
     case hyperspaceDrive
 
     // Lifeform Buildings
-    case metropolis
+    case lifeformBuilding(LifeformBuildingType)
 }
 
 extension Array where Element == Requirement {
