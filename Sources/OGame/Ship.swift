@@ -8,91 +8,129 @@ import Foundation
 
 public protocol Ship: Unit, Buildable, FixedPriceable, Identifiable, Hashable, CustomStringConvertible {
 
+    var id: GameId { get }
     var name: String { get }
+    var requirements: [Requirement] { get }
 
-    // TODO: Add details and constants for base speed, base fuel consumption, base storage capacity, costs, rapidfire, structural points, weapons attack, shields, etc.. -- get from other model files and delete them --- NOW, might as well.
+    /// The drives the ship can fly with, starting with the one it's first built with. Empty for ships that can't fly.
+    var drives: [ShipDrive] { get }
+
+    var baseShieldPower: Int { get }
+    var baseWeaponPower: Int { get }
+    var baseCargoCapacity: Int { get }
+    var isCombatShip: Bool { get }
+
+    /// The number of shots the ship gets against each unit, keyed by the unit's ID.
+    var rapidfire: [GameId: Int] { get }
 }
+
+// MARK: Combat
 
 extension Ship {
 
-    // // BaseShip base struct for ships
-    // type BaseShip struct {
-    //    BaseDefender
-    //    BaseCargoCapacity int64
-    //    BaseSpeed         int64
-    //    FuelConsumption   int64
-    // }
-    //
-    // // GetCargoCapacity returns ship cargo capacity
-    // func (b BaseShip) GetCargoCapacity(techs Researches, probeRaids, isCollector, isPioneers bool) int64 {
-    //    if b.GetID() == EspionageProbeID && !probeRaids {
-    //        return 0
-    //    }
-    //    hyperspaceBonus := 0.05
-    //    if isPioneers {
-    //        hyperspaceBonus = 0.02
-    //    }
-    //    cargo := b.BaseCargoCapacity + int64(float64(b.BaseCargoCapacity*techs.HyperspaceTechnology)*hyperspaceBonus)
-    //    if isCollector && (b.ID == SmallCargoID || b.ID == LargeCargoID) {
-    //        cargo += int64(float64(b.BaseCargoCapacity) * 0.25)
-    //    }
-    //    return cargo
-    // }
-    //
-    // // GetFuelConsumption returns ship fuel consumption
-    // func (b BaseShip) GetFuelConsumption(techs Researches, fleetDeutSaveFactor float64, isGeneral bool) int64 {
-    //    fuelConsumption := b.FuelConsumption
-    //    if b.ID == SmallCargoID && techs.ImpulseDrive >= 5 {
-    //        fuelConsumption *= 2
-    //    } else if b.ID == RecyclerID && techs.HyperspaceDrive >= 15 {
-    //        fuelConsumption *= 3
-    //    } else if b.ID == RecyclerID && techs.ImpulseDrive >= 17 {
-    //        fuelConsumption *= 2
-    //    }
-    //    fuelConsumption = int64(fleetDeutSaveFactor * float64(fuelConsumption))
-    //    if isGeneral {
-    //        fuelConsumption = int64(float64(fuelConsumption) / 2)
-    //    }
-    //    return fuelConsumption
-    // }
-    //
-    // // GetSpeed returns speed of the ship
-    // func (b BaseShip) GetSpeed(techs Researches, isCollector, isGeneral bool) int64 {
-    //    techDriveLvl := 0.0
-    //    driveFactor := 0.2
-    //    baseSpeed := float64(b.BaseSpeed)
-    //    multiplier := int64(1)
-    //    if b.ID == SmallCargoID && techs.ImpulseDrive >= 5 {
-    //        baseSpeed = 10000
-    //        techDriveLvl = float64(techs.ImpulseDrive)
-    //    } else if b.ID == BomberID && techs.HyperspaceDrive >= 8 {
-    //        baseSpeed = 5000
-    //        techDriveLvl = float64(techs.HyperspaceDrive)
-    //        driveFactor = 0.3
-    //    } else if b.ID == RecyclerID && techs.HyperspaceDrive >= 15 {
-    //        techDriveLvl = float64(techs.HyperspaceDrive)
-    //        multiplier = 3
-    //        driveFactor = 0.3
-    //    } else if b.ID == RecyclerID && techs.ImpulseDrive >= 17 {
-    //        techDriveLvl = float64(techs.ImpulseDrive)
-    //        multiplier = 2
-    //    } else if _, ok := b.Requirements[CombustionDrive.ID]; ok {
-    //        techDriveLvl = float64(techs.CombustionDrive)
-    //        driveFactor = 0.1
-    //    } else if _, ok := b.Requirements[ImpulseDrive.ID]; ok {
-    //        techDriveLvl = float64(techs.ImpulseDrive)
-    //    } else if _, ok := b.Requirements[HyperspaceDrive.ID]; ok {
-    //        techDriveLvl = float64(techs.HyperspaceDrive)
-    //        driveFactor = 0.3
-    //    }
-    //    speed := baseSpeed + (baseSpeed*driveFactor)*techDriveLvl
-    //    if isCollector && (b.ID == SmallCargoID || b.ID == LargeCargoID) {
-    //        speed += baseSpeed
-    //    } else if isGeneral && (b.ID == RecyclerID || b.ID.IsCombatShip()) && b.ID != DeathstarID {
-    //        speed += baseSpeed
-    //    }
-    //    return int64(speed) * multiplier
-    // }
+    /// The number of shots each ship has against this ship, keyed by the attacking ship's ID.
+    public var rapidfireFrom: [GameId: Int] {
+        ShipType.allCases.reduce(into: [:]) { rapidfireFrom, shipType in
+            if let shots = shipType.ship.rapidfire[id] {
+                rapidfireFrom[shipType.id] = shots
+            }
+        }
+    }
+
+    /// Shield power after the shielding technology bonus of 10% per level.
+    public func shieldPower(shieldingTechnology: Level) -> Int {
+        baseShieldPower * (10 + shieldingTechnology) / 10
+    }
+
+    /// Weapon power after the weapons technology bonus of 10% per level.
+    public func weaponPower(weaponsTechnology: Level) -> Int {
+        baseWeaponPower * (10 + weaponsTechnology) / 10
+    }
+}
+
+// MARK: Flight
+
+extension Ship {
+
+    /// The drive the ship flies with at the given research levels.
+    ///
+    /// A ship switches to a better drive once that drive's research reaches the drive's minimum level,
+    /// and otherwise flies with the drive it was built with.
+    public func drive(for driveLevels: DriveLevels) -> ShipDrive? {
+        drives.last { driveLevels.level(of: $0.drive) >= $0.minimumLevel } ?? drives.first
+    }
+
+    /// The speed of the ship, including the drive research bonus and the Collector or General class bonus.
+    public func speed(driveLevels: DriveLevels, characterClass: CharacterClass = .notSelected) -> Int {
+        guard let drive = drive(for: driveLevels) else { return 0 }
+
+        let level = driveLevels.level(of: drive.drive)
+        var speed = drive.baseSpeed + drive.baseSpeed * drive.drive.speedIncreasePerLevel * level / 100
+
+        if characterClass.isCollector, isCargoShip {
+            speed += drive.baseSpeed
+        } else if characterClass.isGeneral, isRecycler || isCombatShip, !isDeathstar {
+            speed += drive.baseSpeed
+        }
+
+        return speed
+    }
+
+    /// The deuterium the ship uses per flight unit, before distance and speed are taken into account.
+    public func fuelConsumption(
+        driveLevels: DriveLevels,
+        characterClass: CharacterClass = .notSelected,
+        deuteriumSaveFactor: Double = 1
+    ) -> Int {
+        guard let drive = drive(for: driveLevels) else { return 0 }
+
+        let fuelConsumption = Int(deuteriumSaveFactor * Double(drive.fuelConsumption))
+        return characterClass.isGeneral ? fuelConsumption / 2 : fuelConsumption
+    }
+
+    /// - Parameters:
+    ///   - probeRaids: Whether the universe lets espionage probes carry resources.
+    ///   - isPioneers: Whether the universe is a Pioneers universe, where hyperspace technology adds 2% per level instead of 5%.
+    public func cargoCapacity(
+        hyperspaceTechnology: Level,
+        characterClass: CharacterClass = .notSelected,
+        probeRaids: Bool = false,
+        isPioneers: Bool = false
+    ) -> Int {
+        if isEspionageProbe, !probeRaids {
+            return 0
+        }
+
+        let hyperspaceBonusPerLevel = isPioneers ? 2 : 5
+        var cargoCapacity = baseCargoCapacity + baseCargoCapacity * hyperspaceTechnology * hyperspaceBonusPerLevel / 100
+
+        if characterClass.isCollector, isCargoShip {
+            cargoCapacity += baseCargoCapacity / 4
+        }
+
+        return cargoCapacity
+    }
+}
+
+// MARK: Ship kinds with class bonuses
+
+extension Ship {
+
+    private var isCargoShip: Bool {
+        id == ShipType.smallCargo.id || id == ShipType.largeCargo.id
+    }
+
+    private var isRecycler: Bool {
+        id == ShipType.recycler.id
+    }
+
+    private var isDeathstar: Bool {
+        id == ShipType.deathstar.id
+    }
+
+    private var isEspionageProbe: Bool {
+        id == ShipType.espionageProbe.id
+    }
 }
 
 // MARK: Hashable

@@ -26,4 +26,11 @@ final class TradeShipTests: XCTestCase {
     func testBaseStructuralIntegrity() throws {
         XCTAssertEqual(sut.baseStructuralIntegrity, 0)
     }
+
+//    func testRequirements() throws {
+//        XCTAssertEqual(sut.requirements, [
+//            Requirement(requires: .shipyard, level: 7),
+//            Requirement(requires: .hyperspaceDrive, level: 4)
+//        ])
+//    }
 }

@@ -6,7 +6,7 @@
 
 import Foundation
 
-public enum ShipType: GameId, Identifiable, Equatable {
+public enum ShipType: GameId, Identifiable, Equatable, CaseIterable {
     case lightFighter = 204
     case heavyFighter = 205
     case cruiser = 206
@@ -23,10 +23,52 @@ public enum ShipType: GameId, Identifiable, Equatable {
     case recycler = 209
     case espionageProbe = 210
     case solarSatellite = 212
+    case tradeShip = 216
     case crawler = 217
 
     public var id: GameId {
         rawValue
+    }
+
+    public var ship: any Ship {
+        switch self {
+        case .lightFighter:
+            return LightFighter()
+        case .heavyFighter:
+            return HeavyFighter()
+        case .cruiser:
+            return Cruiser()
+        case .battleship:
+            return Battleship()
+        case .battlecruiser:
+            return Battlecruiser()
+        case .bomber:
+            return Bomber()
+        case .destroyer:
+            return Destroyer()
+        case .deathstar:
+            return Deathstar()
+        case .reaper:
+            return Reaper()
+        case .pathfinder:
+            return Pathfinder()
+        case .smallCargo:
+            return SmallCargo()
+        case .largeCargo:
+            return LargeCargo()
+        case .colonyShip:
+            return ColonyShip()
+        case .recycler:
+            return Recycler()
+        case .espionageProbe:
+            return EspionageProbe()
+        case .solarSatellite:
+            return SolarSatellite()
+        case .tradeShip:
+            return TradeShip()
+        case .crawler:
+            return Crawler()
+        }
     }
 }
 

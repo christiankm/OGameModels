@@ -6,7 +6,7 @@
 
 import Foundation
 
-/// A structure that has a cost regardless that scales with the level.
+/// A structure that has a cost that scales with the level.
 /// This is most common for buildings and research.
 public protocol ScaledPriceable {
 

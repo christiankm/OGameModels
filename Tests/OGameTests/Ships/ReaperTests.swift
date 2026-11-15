@@ -26,4 +26,49 @@ final class ReaperTests: XCTestCase {
     func testBaseStructuralIntegrity() throws {
         XCTAssertEqual(sut.baseStructuralIntegrity, 140_000)
     }
+
+    func testRequirements() throws {
+        XCTAssertEqual(sut.requirements, [
+            Requirement(requires: .generalClass, level: 1),
+            Requirement(requires: .shipyard, level: 10),
+            Requirement(requires: .hyperspaceDrive, level: 7),
+            Requirement(requires: .hyperspaceTechnology, level: 6),
+            Requirement(requires: .shieldingTechnology, level: 6)
+        ])
+    }
+
+    func testDrives() throws {
+        XCTAssertEqual(sut.drives, [
+            ShipDrive(drive: .hyperspace, baseSpeed: 7_000, fuelConsumption: 1_100, minimumLevel: 7)
+        ])
+    }
+
+    func testCombatValues() throws {
+        XCTAssertEqual(sut.baseShieldPower, 700)
+        XCTAssertEqual(sut.baseWeaponPower, 2_800)
+        XCTAssertEqual(sut.baseCargoCapacity, 10_000)
+        XCTAssertTrue(sut.isCombatShip)
+    }
+
+    func testRapidfire() throws {
+        XCTAssertEqual(sut.rapidfire, [
+            ShipType.espionageProbe.id: 5,
+            ShipType.solarSatellite.id: 5,
+            ShipType.crawler.id: 5,
+            ShipType.battleship.id: 7,
+            ShipType.bomber.id: 4,
+            ShipType.destroyer.id: 3
+        ])
+    }
+
+    func testRapidfireFrom() throws {
+        XCTAssertEqual(sut.rapidfireFrom, [
+            ShipType.deathstar.id: 10
+        ])
+    }
+
+    func testSpeed() throws {
+        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7)), 21_700)
+        XCTAssertEqual(sut.speed(driveLevels: DriveLevels(hyperspace: 7), characterClass: .general), 28_700)
+    }
 }
